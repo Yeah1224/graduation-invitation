@@ -13,9 +13,28 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Thiệp Mời Lễ Tốt Nghiệp",
-  description: "Trân trọng kính mời đến dự Lễ Tốt Nghiệp",
-};
+  title: "Dai Nghia's Graduation Invitation",
+
+  description:
+    "Join Dai Nghia in celebrating a milestone achievement and unforgettable memories.",
+
+  keywords: [
+    "Graduation",
+    "Invitation",
+    "Dai Nghia",
+    "Graduation Ceremony",
+  ],
+
+  authors: [
+    {
+      name: "Dai Nghia",
+    },
+  ],
+
+  icons: {
+    icon: "/graduation-cap.svg",
+  },
+}
 
 export default function RootLayout({
   children,
