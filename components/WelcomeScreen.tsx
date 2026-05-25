@@ -4,11 +4,19 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaGraduationCap } from 'react-icons/fa'
 
-export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: string, prefix: string }) => void }) {
+export default function WelcomeScreen({
+  onOpen,
+}: {
+  onOpen: (info: { name: string; prefix: string }) => void
+}) {
   const [name, setName] = useState('')
   const [gender, setGender] = useState('male')
   const [birthYear, setBirthYear] = useState('')
   const [showInvite, setShowInvite] = useState(false)
+
+  // FIX: giới hạn năm tối đa 2026
+  const currentYear = 2026
+  const years = Array.from({ length: 80 }, (_, i) => currentYear - i)
 
   const getPrefix = () => {
     const year = Number(birthYear)
@@ -25,8 +33,10 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
 
   const getMessage = () => {
     const year = Number(birthYear)
-    if (year < 2004) return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với em.'
-    if (year === 2004) return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với mình.'
+    if (year < 2004)
+      return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với em.'
+    if (year === 2004)
+      return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với mình.'
     return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng anh nhé.'
   }
 
@@ -51,12 +61,17 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
             <div className="flex justify-center mb-6">
               <FaGraduationCap className="text-5xl text-amber-700 drop-shadow-[0_0_15px_rgba(217,119,6,0.2)]" />
             </div>
+
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-center mb-8 bg-gradient-to-r from-amber-800 via-yellow-600 to-amber-800 text-transparent bg-clip-text">
               Vui lòng nhập thông tin
             </h2>
+
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* NAME */}
               <div>
-                <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">Tên của bạn</label>
+                <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">
+                  Tên của bạn
+                </label>
                 <input
                   placeholder="VD: Nguyễn Văn A"
                   value={name}
@@ -66,9 +81,12 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {/* GENDER */}
                 <div>
-                  <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">Giới tính</label>
+                  <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">
+                    Giới tính
+                  </label>
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
@@ -78,16 +96,26 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
                     <option value="female">Nữ</option>
                   </select>
                 </div>
+
+                {/* YEAR DROPDOWN */}
                 <div>
-                  <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">Năm sinh</label>
-                  <input
-                    type="number"
-                    placeholder="VD: 2004"
+                  <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">
+                    Năm sinh
+                  </label>
+
+                  <select
                     value={birthYear}
                     onChange={(e) => setBirthYear(e.target.value)}
-                    className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none focus:border-amber-500 transition-all focus:shadow-[0_0_20px_rgba(217,119,6,0.15)] placeholder-amber-900/30"
+                    className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none appearance-none focus:border-amber-500 transition-all focus:shadow-[0_0_20px_rgba(217,119,6,0.15)]"
                     required
-                  />
+                  >
+                    <option value="">Chọn năm sinh</option>
+                    {years.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -106,7 +134,7 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
             animate={{ opacity: 1, scale: 1 }}
             className="backdrop-blur-xl bg-white/80 border border-amber-600/30 rounded-[2rem] p-10 md:p-14 text-center shadow-[0_0_60px_rgba(217,119,6,0.1)] relative overflow-hidden"
           >
-            {/* Elegant Corner Decorations */}
+            {/* Corner decorations */}
             <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-amber-500/50 rounded-tl-[2rem] m-4"></div>
             <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-amber-500/50 rounded-tr-[2rem] m-4"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-amber-500/50 rounded-bl-[2rem] m-4"></div>
@@ -121,20 +149,24 @@ export default function WelcomeScreen({ onOpen }: { onOpen: (info: { name: strin
               <h3 className="text-2xl md:text-3xl text-amber-800 font-serif mb-6 italic tracking-wider">
                 {getGreeting()}
               </h3>
-              <div className="text-3xl md:text-4xl font-bold mb-8 font-serif bg-gradient-to-b from-amber-600 via-yellow-600 to-amber-900 text-transparent bg-clip-text drop-shadow-sm leading-tight">
+
+              <div className="text-3xl md:text-4xl font-bold mb-8 font-serif bg-gradient-to-b from-amber-600 via-yellow-600 to-amber-900 text-transparent bg-clip-text">
                 {getPrefix()} {name}
               </div>
-              <p className="text-xl md:text-2xl leading-relaxed text-amber-900/100 mb-12 font-light">
-                Đến tham dự buổi Lễ Tốt Nghiệp<br />
+
+              <p className="text-xl md:text-2xl leading-relaxed text-amber-900 mb-12 font-light">
+                Đến tham dự buổi Lễ Tốt Nghiệp <br />
                 {getMessage()}
               </p>
 
               <button
                 onClick={() => onOpen({ name, prefix: getPrefix() })}
-                className="group relative inline-flex items-center justify-center px-12 py-5 font-bold text-amber-900 border border-amber-500/50 rounded-full overflow-hidden hover:scale-105 transition-transform bg-amber-50/50 hover:bg-amber-100 shadow-[0_0_30px_rgba(217,119,6,0.1)]"
+                className="group relative inline-flex items-center justify-center px-12 py-5 font-bold text-amber-900 border border-amber-500/50 rounded-full overflow-hidden hover:scale-105 transition-transform bg-amber-50/50 hover:bg-amber-100"
               >
-                <span className="relative z-10 text-xl tracking-widest">Mở Thiệp</span>
-                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span className="relative z-10 text-xl tracking-widest">
+                  Mở Thiệp
+                </span>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
               </button>
             </motion.div>
           </motion.div>
