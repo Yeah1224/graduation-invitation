@@ -1,65 +1,81 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Hero from '@/components/Hero'
+import Footer from '@/components/Footer'
+import WelcomeScreen from '@/components/WelcomeScreen'
+import AttendanceForm from '@/components/AttendanceForm'
+import Fireworks from '@/components/Fireworks'
+
+export default function Page() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [guestInfo, setGuestInfo] = useState<{ name: string, prefix: string } | null>(null)
+
+  const handleOpen = (info: { name: string, prefix: string }) => {
+    setGuestInfo(info)
+    setIsOpen(true)
+
+    // Optional: Smooth scroll to top when opening the card
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    // ---------------------------------------------------------
+    // BẠN MUỐN ĐỔI MÀU NỀN? HÃY CHỈNH SỬA Ở CÁC THUỘC TÍNH DƯỚI ĐÂY:
+    // 1. Màu nền cơ bản: bg-[#f4ede0]
+    // 2. Màu gradient nền: from-[#fbf4eb] via-[#eee1cd] to-[#e3d0b8]
+    // (Lưu ý: bạn có thể thay thế mã hex bằng các màu như bg-blue-100, etc.)
+    // ---------------------------------------------------------
+    <main className="bg-[#f4ede0] text-amber-900 min-h-screen font-sans selection:bg-amber-200/50 relative overflow-hidden">
+      {/* Global Background Gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-[#fbf4eb] via-[#eee1cd] to-[#e3d0b8] z-0" />
+
+      {/* Decorative blurred blobs */}
+      <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-amber-300/30 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 z-0"></div>
+      <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-amber-200/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 z-0"></div>
+
+      {/* Global Fireworks Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-80">
+        <Fireworks />
+      </div>
+
+      <div className="relative z-10">
+        <AnimatePresence mode="wait">
+          {!isOpen ? (
+            <motion.div
+              key="welcome"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <div className="relative z-10 w-full">
+                <WelcomeScreen onOpen={handleOpen} />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="main-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.3 }}
+              className="relative"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+              <Hero />
+
+              <div className="relative z-20 bg-gradient-to-b from-transparent via-[#fcfaf5]/90 to-[#f9f6ef]">
+                <section className="relative z-10 py-16 px-6">
+                  <AttendanceForm guestInfo={guestInfo || undefined} />
+                </section>
+
+                <Footer />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </main>
+  )
 }
