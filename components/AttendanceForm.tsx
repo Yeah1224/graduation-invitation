@@ -16,39 +16,44 @@ export default function AttendanceForm({ guestInfo }: { guestInfo?: { name: stri
 
     setIsLoading(true)
 
-    try {
-      // Gửi email qua Web3Forms
-      // BẠN CẦN LÀM: Truy cập https://web3forms.com/ nhập email của bạn để lấy Access Key và thay vào "YOUR_ACCESS_KEY_HERE"
-      const accessKey = "13f9a409-b838-43a5-acf6-d59ef155149c"
+try {
+  const accessKey =
+    '13f9a409-b838-43a5-acf6-d59ef155149c'
 
-      if (accessKey !== "13f9a409-b838-43a5-acf6-d59ef155149c") {
-        await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-          },
-          body: JSON.stringify({
-            access_key: accessKey,
-            subject: `[RSVP] Xác nhận tham dự từ ${guestInfo?.prefix || 'Khách'} ${guestInfo?.name || ''}`,
-            from_name: "Hệ thống Thư mời TN",
-            Khách_Mời: `${guestInfo?.prefix || ''} ${guestInfo?.name || ''}`,
-            Xác_Nhận: status === 'attending' ? 'Sẽ có mặt 🎉' : 'Không sắp xếp được 😢',
-            Lời_Nhắn: message || 'Không có lời nhắn'
-          })
-        })
-      } else {
-        console.warn("")
-      }
+  await fetch(
+    'https://api.web3forms.com/submit',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
 
-      setIsSubmitted(true)
-    } catch (error) {
-      console.error(error)
-      setIsSubmitted(true)
-    } finally {
-      setIsLoading(false)
+        subject: `[RSVP] Xác nhận tham dự từ ${guestInfo?.prefix || 'Khách'} ${guestInfo?.name || ''
+          }`,
+
+        from_name: 'Hệ thống Thư mời TN',
+
+        Khách_Mời: `${guestInfo?.prefix || ''} ${guestInfo?.name || ''
+          }`,
+
+        Xác_Nhận:
+          status === 'attending'
+            ? 'Sẽ có mặt 🎉'
+            : 'Không sắp xếp được 😢',
+
+        Lời_Nhắn:
+          message || 'Không có lời nhắn',
+      }),
     }
-  }
+  )
+
+  setIsSubmitted(true)
+} catch (error) {
+  console.error(error)
+}
 
   if (isSubmitted) {
     return (
@@ -138,4 +143,5 @@ export default function AttendanceForm({ guestInfo }: { guestInfo?: { name: stri
       </form>
     </div>
   )
+}
 }
