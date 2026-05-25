@@ -31,22 +31,20 @@ try {
       body: JSON.stringify({
         access_key: accessKey,
 
-        subject: `[RSVP] Xác nhận tham dự từ ${guestInfo?.prefix || 'Khách'} ${guestInfo?.name || ''
-          }`,
+        subject: `[RSVP] ${guestInfo?.prefix} ${guestInfo?.name}`,
 
-        from_name: 'Hệ thống Thư mời TN',
+        from_name: 'Graduation Invitation',
 
-        Khách_Mời: `${guestInfo?.prefix || ''} ${guestInfo?.name || ''
-          }`,
+        guest_name: `${guestInfo?.prefix} ${guestInfo?.name}`,
 
-        Xác_Nhận:
+        attendance:
           status === 'attending'
-            ? 'Sẽ có mặt 🎉'
-            : 'Không sắp xếp được 😢',
+            ? 'Sẽ tham dự 🎉'
+            : 'Không tham dự 😢',
 
-        Lời_Nhắn:
+        message:
           message || 'Không có lời nhắn',
-      }),
+      })
     }
   )
 
