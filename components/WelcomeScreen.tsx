@@ -99,7 +99,7 @@ export default function WelcomeScreen({
                   Tên của bạn
                 </label>
                 <input
-                  placeholder="VD: Nguyễn Văn A"
+                  placeholder="Your name here..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none focus:border-amber-500 transition-all focus:shadow-[0_0_20px_rgba(217,119,6,0.15)] placeholder-amber-900/30"
