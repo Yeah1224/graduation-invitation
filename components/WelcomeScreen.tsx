@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaGraduationCap } from 'react-icons/fa'
 
@@ -11,31 +11,56 @@ export default function WelcomeScreen({
 }) {
   const [name, setName] = useState('')
   const [gender, setGender] = useState('male')
-  const [birthYear, setBirthYear] = useState('')
+  const [birthYear, setBirthYear] = useState<number | null>(null)
   const [showInvite, setShowInvite] = useState(false)
 
-  // FIX: giới hạn năm tối đa 2026
-  const currentYear = 2026
-  const years = Array.from({ length: 80 }, (_, i) => currentYear - i)
+  const [openYear, setOpenYear] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const years = Array.from({ length: 60 }, (_, i) => 2015 - i)
+
+  // click outside + ESC close
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setOpenYear(false)
+      }
+    }
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenYear(false)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEsc)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [])
 
   const getPrefix = () => {
-    const year = Number(birthYear)
-    if (year < 2004) return gender === 'male' ? 'Anh' : 'Chị'
-    if (year === 2004) return 'Bạn'
+    if (!birthYear) return ''
+    if (birthYear < 2004) return gender === 'male' ? 'Anh' : 'Chị'
+    if (birthYear === 2004) return 'Bạn'
     return 'Em'
   }
 
   const getGreeting = () => {
-    const year = Number(birthYear)
-    if (year < 2004) return 'Trân trọng kính mời'
+    if (!birthYear) return ''
+    if (birthYear < 2004) return 'Trân trọng kính mời'
     return 'Thân mời'
   }
 
   const getMessage = () => {
-    const year = Number(birthYear)
-    if (year < 2004)
+    if (!birthYear) return ''
+    if (birthYear < 2004)
       return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với em.'
-    if (year === 2004)
+    if (birthYear === 2004)
       return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng với mình.'
     return 'để cùng chia sẻ niềm vui và khoảnh khắc đáng nhớ này cùng anh nhé.'
   }
@@ -58,6 +83,7 @@ export default function WelcomeScreen({
             exit={{ opacity: 0, scale: 0.95 }}
             className="backdrop-blur-xl bg-white/70 border border-amber-600/20 rounded-3xl p-8 md:p-12 shadow-[0_0_50px_rgba(217,119,6,0.1)]"
           >
+            {/* ICON */}
             <div className="flex justify-center mb-6">
               <FaGraduationCap className="text-5xl text-amber-700 drop-shadow-[0_0_15px_rgba(217,119,6,0.2)]" />
             </div>
@@ -98,27 +124,67 @@ export default function WelcomeScreen({
                 </div>
 
                 {/* YEAR DROPDOWN */}
-                <div>
+                <div ref={dropdownRef} className="relative">
                   <label className="block text-sm font-medium text-amber-800/80 mb-2 uppercase tracking-widest">
                     Năm sinh
                   </label>
 
-                  <select
-                    value={birthYear}
-                    onChange={(e) => setBirthYear(e.target.value)}
-                    className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none appearance-none focus:border-amber-500 transition-all focus:shadow-[0_0_20px_rgba(217,119,6,0.15)]"
-                    required
+                  {/* BUTTON */}
+                  <div
+                    onClick={() => setOpenYear(!openYear)}
+                    className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 cursor-pointer flex justify-between items-center"
                   >
-                    <option value="">Chọn năm sinh</option>
-                    {years.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
+                    <span
+                      className={
+                        birthYear
+                          ? 'text-amber-900 font-medium'
+                          : 'text-amber-800/100'
+                      }
+                    >
+                      {birthYear ?? 'Chọn năm sinh'}
+                    </span>
+
+                    <span
+                      className={`text-amber-700 transition-transform ${
+                        openYear ? 'rotate-180' : ''
+                      }`}
+                    >
+                      ▾
+                    </span>
+                  </div>
+
+                  {/* DROPDOWN */}
+                  <AnimatePresence>
+                    {openYear && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute z-50 mt-2 w-full max-h-60 overflow-y-auto rounded-xl bg-white border border-amber-200 shadow-xl"
+                      >
+                        {years.map((year) => (
+                          <div
+                            key={year}
+                            onClick={() => {
+                              setBirthYear(year)
+                              setOpenYear(false)
+                            }}
+                            className={`px-4 py-3 cursor-pointer transition hover:bg-amber-100 ${
+                              birthYear === year
+                                ? 'bg-amber-200 font-bold text-amber-900'
+                                : ''
+                            }`}
+                          >
+                            {year}
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
+              {/* SUBMIT */}
               <button
                 type="submit"
                 className="w-full mt-8 px-6 py-4 bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-white font-bold text-lg rounded-xl hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(217,119,6,0.2)] uppercase tracking-widest"
@@ -134,12 +200,6 @@ export default function WelcomeScreen({
             animate={{ opacity: 1, scale: 1 }}
             className="backdrop-blur-xl bg-white/80 border border-amber-600/30 rounded-[2rem] p-10 md:p-14 text-center shadow-[0_0_60px_rgba(217,119,6,0.1)] relative overflow-hidden"
           >
-            {/* Corner decorations */}
-            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-amber-500/50 rounded-tl-[2rem] m-4"></div>
-            <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-amber-500/50 rounded-tr-[2rem] m-4"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-amber-500/50 rounded-bl-[2rem] m-4"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-amber-500/50 rounded-br-[2rem] m-4"></div>
-
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -166,7 +226,6 @@ export default function WelcomeScreen({
                 <span className="relative z-10 text-xl tracking-widest">
                   Mở Thiệp
                 </span>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
               </button>
             </motion.div>
           </motion.div>
