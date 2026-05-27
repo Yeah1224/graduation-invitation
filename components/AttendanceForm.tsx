@@ -66,7 +66,7 @@ export default function AttendanceForm({
             attendance:
               status === 'attending'
                 ? 'Sẽ tham dự 🎉'
-                : 'Không tham dự 😢',
+                : 'Phân vân / Chưa biết nữa 😢',
 
             message:
               message ||
@@ -140,24 +140,26 @@ export default function AttendanceForm({
         className="space-y-8"
       >
         <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          {/* attending */}
           <button
             type="button"
             onClick={() =>
               setStatus('attending')
             }
-            className={`flex-1 py-5 px-6 rounded-xl font-bold text-lg transition-all border-2 flex items-center justify-center gap-3 ${
+            className={`flex-1 py-5 px-6 rounded-xl font-bold text-lg transition-all duration-300 border-2 flex items-center justify-center gap-3 ${
               status === 'attending'
-                ? 'bg-amber-50 text-amber-800 border-amber-400'
-                : 'bg-white/50 text-amber-900/60 border-amber-200'
+                ? 'bg-amber-50 text-amber-800 border-amber-400 scale-[1.02] shadow-lg'
+                : 'bg-white/50 text-amber-900/60 border-amber-200 hover:border-amber-300'
             }`}
           >
             <span className="text-2xl">
-              🎉
+              🥳
             </span>
 
-            Sẽ tham dự
+            Chắc chắn rồi
           </button>
 
+          {/* unsure */}
           <button
             type="button"
             onClick={() =>
@@ -165,20 +167,21 @@ export default function AttendanceForm({
                 'not_attending'
               )
             }
-            className={`flex-1 py-5 px-6 rounded-xl font-bold text-lg transition-all border-2 flex items-center justify-center gap-3 ${
+            className={`flex-1 py-5 px-6 rounded-xl font-bold text-lg transition-all duration-300 border-2 flex items-center justify-center gap-3 ${
               status === 'not_attending'
-                ? 'bg-amber-50 text-amber-800 border-amber-400'
-                : 'bg-white/50 text-amber-900/60 border-amber-200'
+                ? 'bg-amber-50 text-amber-800 border-amber-400 scale-[1.02] shadow-lg'
+                : 'bg-white/50 text-amber-900/60 border-amber-200 hover:border-amber-300'
             }`}
           >
-            <span className="text-lg">
+            <span className="text-xl">
               😢
             </span>
 
-            Không sắp xếp được
+            Chưa biết nữa
           </button>
         </div>
 
+        {/* message */}
         <div>
           <label className="block text-m font-medium text-amber-800 mb-3 uppercase tracking-widest text-center">
             Lời nhắn nhủ
@@ -186,31 +189,47 @@ export default function AttendanceForm({
 
           <textarea
             rows={4}
-            placeholder="Gửi lời chúc hoặc nhắn nhủ..."
+            placeholder={
+              status === 'attending'
+                ? 'Gửi lời chúc hoặc nhắn nhủ...'
+                : 'Để lại đôi lời nếu muốn...'
+            }
             value={message}
             onChange={(e) =>
               setMessage(
                 e.target.value
               )
             }
-            className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none resize-none"
+            className="w-full px-6 py-4 rounded-xl bg-white/50 border border-amber-200 text-amber-900 outline-none resize-none focus:border-amber-400 transition-all"
           />
         </div>
 
+        {/* submit */}
         <button
           type="submit"
           disabled={!status || isLoading}
-          className={`w-full py-5 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-3 uppercase tracking-widest ${
+          className={`w-full py-5 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-widest ${
             status && !isLoading
-              ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-white'
+              ? 'bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 text-white hover:scale-[1.01] shadow-lg'
               : 'bg-white/80 text-amber-900/30 cursor-not-allowed border border-amber-200'
           }`}
         >
           {isLoading ? (
             'Đang gửi...'
+          ) : status === 'attending' ? (
+            <>
+              Gửi Lời Chúc ❤️
+              <FaPaperPlane />
+            </>
+          ) : status ===
+            'not_attending' ? (
+            <>
+              Gửi Phản Hồi 😢
+              <FaPaperPlane />
+            </>
           ) : (
             <>
-              Gửi Phản Hồi{' '}
+              Gửi Phản Hồi
               <FaPaperPlane />
             </>
           )}
