@@ -73,7 +73,10 @@ export default function Hero() {
         </div>
 
         <p className="tracking-[2px] uppercase text-amber-700/80 mb-4 text-2xl md:text-4xl font-light font-serif">
-          Thiệp mời Tốt Nghiệp
+          Thiệp mời tham dự 
+        </p>
+        <p className="tracking-[2px] uppercase text-amber-700/80 mb-4 text-2xl md:text-4xl font-light font-serif">
+          Lễ Tốt Nghiệp
         </p>
 
         <h1 className="text-5xl md:text-7xl font-black leading-[1.15] pb-2 mb-8 font-serif bg-linear-to-r from-amber-600 via-yellow-600 to-amber-800 text-transparent bg-clip-text">
