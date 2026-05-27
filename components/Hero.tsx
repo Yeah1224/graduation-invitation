@@ -125,7 +125,7 @@ export default function Hero() {
                 <h4 className="text-base font-bold text-amber-900 mb-1 font-serif tracking-wide">Học Viện Hàng Không Việt Nam</h4>
                 <p className="text-amber-700/100 font-light mt-0.5 text-sm">18A/1 Cộng Hòa, Phường  Tân Sơn Nhất, Hồ Chí Minh</p>
                 <a
-                  href="https://maps.app.goo.gl/i1DPEaYGoRcqpLZ28"
+                  href="https://maps.app.goo.gl/UCoMsdmu1CHcbtw57"
                   target="_blank"
                   className="inline-block mt-2 text-sm italic underline text-amber-700 hover:text-amber-500 transition"
                 >
